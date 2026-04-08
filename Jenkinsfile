@@ -16,20 +16,19 @@ pipeline {
                 sh 'npm test'
             }
         }
-      stage('Static Code Analysis') {
-        environment {
-          SONAR_URL= 'http://172.18.134.230:9000'    
-    }
-        steps {
-          withCredentials([string(credentialsId: 'sonarqube', variable: 'SONAR_AUTH_TOKEN')]) {
-            sh '''
-            sonar-scanner \
-            -Dsonar.host.url=${SONAR_URL} \
-            -Dsonar.login=${SONAR_AUTH_TOKEN}
-            '''
-      }
+stage('Static Code Analysis') {
+    steps {
+        withSonarQubeEnv('sonarqube-server') {
+            script {
+                def scannerHome = tool 'SonarScanner'
+                
+                sh """
+                ${scannerHome}/bin/sonar-scanner
+                """
+            }
         }
-      }
+    }
+}
       stage('BUILD and push image') {
         environment {
           DOCKER_IMAGE="kaman623/nodejs:${BUILD_NUMBER}"
