@@ -18,11 +18,15 @@ pipeline {
         }
       stage('Static Code Analysis') {
         environment {
-          SONAR_URL= 'http://172.18.134.230:9000/'    
+          SONAR_URL= 'http://172.18.134.230:9000'    
     }
         steps {
           withCredentials([string(credentialsId: 'sonarqube', variable: 'SONAR_AUTH_TOKEN')]) {
-            sh 'mvn sonar:sonar -Dsonarlogin=$SONAR_AUTH_TOKEN -Dsonar.url=${SONAR_URL}'
+            sh '''
+            sonar-scanner \
+            -Dsonar.host.url=${SONAR_URL} \
+            -Dsonar.login=${SONAR_AUTH_TOKEN}
+            '''
       }
         }
       }
@@ -32,7 +36,7 @@ pipeline {
          // REGISTRY_CREDENTIALS=credentials('docker-cred') 
         }
         steps {
-          withCredentials([usernamePassword(credetialsId: 'docker-cred', usernameVariable: 'DOCKER_USER', usernamePassword: 'DOCKER_PASS')])
+          withCredentials([usernamePassword(credentialsId: 'docker-cred', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')])
           {
             sh ''' 
             cd node-app
