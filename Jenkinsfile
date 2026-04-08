@@ -32,11 +32,11 @@ pipeline {
          // REGISTRY_CREDENTIALS=credentials('docker-cred') 
         }
         steps {
-          withCredentials([usernamePassword(credetialsId: 'docker-cred', usernameVariable: 'DOCKER_USERNAME', usernamePassword: 'DOCKER_PWD')])
+          withCredentials([usernamePassword(credetialsId: 'docker-cred', usernameVariable: 'DOCKER_USER', usernamePassword: 'DOCKER_PASS')])
           {
             sh ''' 
             cd node-app
-            docker build -t ${DOCKER_IMAGE}
+            docker build -t ${DOCKER_IMAGE} .
             echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin
             docker push ${DOCKER_IMAGE}
             docker logout
