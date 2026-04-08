@@ -31,7 +31,7 @@ stage('Static Code Analysis') {
 }
       stage('BUILD and push image') {
         environment {
-          DOCKER_IMAGE="kaman623/nodejs:${BUILD_NUMBER}"
+          DOCKER_IMAGE="kamran623/nodejs:${BUILD_NUMBER}"
          // REGISTRY_CREDENTIALS=credentials('docker-cred') 
         }
         steps {
